@@ -5,6 +5,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import geekbrains.ru.translator.R
 import geekbrains.ru.translator.model.data.AppState
@@ -12,11 +13,15 @@ import geekbrains.ru.translator.model.data.DataModel
 import geekbrains.ru.translator.presenter.MainPresenter
 import geekbrains.ru.translator.presenter.View
 import geekbrains.ru.translator.view.adapter.MainAdapter
+import geekbrains.ru.translator.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View {
 
     private lateinit var presenter: MainPresenter<AppState, View>
+    private var viewModel: MainViewModel by lazy {
+        ViewModelProvider.
+    }
     private var adapter: MainAdapter? = null
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
