@@ -8,7 +8,6 @@ import geekbrains.ru.translator.model.datasource.DataSourceLocal
 import geekbrains.ru.translator.model.datasource.DataSourceRemote
 import geekbrains.ru.translator.model.repository.Repository
 import geekbrains.ru.translator.model.repository.RepositoryImplementation
-import geekbrains.ru.translator.presenter.View
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
@@ -54,5 +53,4 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-
 }
