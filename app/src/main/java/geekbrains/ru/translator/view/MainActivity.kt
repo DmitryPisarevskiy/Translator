@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), View {
                 override fun onClick(searchWord: String) {
 //                    presenter.getData(searchWord, true)
                     viewModel.getData(searchWord, true)
+
                 }
             })
             searchDialogFragment.show(supportFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
