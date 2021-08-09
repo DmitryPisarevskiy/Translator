@@ -5,7 +5,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import geekbrains.ru.translator.R
 import geekbrains.ru.translator.model.data.AppState
@@ -13,12 +12,15 @@ import geekbrains.ru.translator.model.data.DataModel
 import geekbrains.ru.translator.view.adapter.MainAdapter
 import geekbrains.ru.translator.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
+    private val model: MainViewModel by lazy {
+        val vm: MainViewModel by viewModel()
+        vm
     }
+
     private var adapter: MainAdapter? = null
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
@@ -30,7 +32,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel.liveData.observeForever {
+
+        model.liveData.observeForever {
             renderData(it)
         }
         search_fab.setOnClickListener {
@@ -38,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
                 override fun onClick(searchWord: String) {
-                    viewModel.getData(searchWord, true)
+                    model.getData(searchWord, true)
 
                 }
             })
@@ -83,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         showViewError()
         error_textview.text = error ?: getString(R.string.undefined_error)
         reload_button.setOnClickListener {
-            viewModel.getData("hi",true)
+            model.getData("hi",true)
         }
     }
 
