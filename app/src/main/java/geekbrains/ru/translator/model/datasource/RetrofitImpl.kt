@@ -1,5 +1,6 @@
 package geekbrains.ru.translator.model.datasource
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import geekbrains.ru.translator.model.data.DataModel
 import retrofit2.Retrofit
@@ -13,7 +14,7 @@ class RetrofitImpl : DataSource<List<DataModel>> {
         return@lazy Retrofit.Builder()
             .baseUrl(BASE_URL_LOCATIONS)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
 
