@@ -12,6 +12,10 @@ import geekbrains.ru.translator.model.data.DataModel
 import geekbrains.ru.translator.view.adapter.MainAdapter
 import geekbrains.ru.translator.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -48,6 +52,8 @@ class MainActivity : AppCompatActivity() {
             searchDialogFragment.show(supportFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
         }
     }
+
+
 
     private fun renderData(appState: AppState) {
         when (appState) {

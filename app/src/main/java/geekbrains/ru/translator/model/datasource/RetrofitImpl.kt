@@ -21,7 +21,7 @@ class RetrofitImpl : DataSource<List<DataModel>> {
             .build()
     }
 
-    override fun getData(word: String): Observable<List<DataModel>> {
+    override suspend fun getData(word: String): List<DataModel> {
         return api.search(word)
     }
 
