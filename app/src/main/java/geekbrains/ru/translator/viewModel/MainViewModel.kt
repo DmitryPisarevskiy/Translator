@@ -8,6 +8,7 @@ import geekbrains.ru.translator.model.datasource.DataSourceLocal
 import geekbrains.ru.translator.model.datasource.DataSourceRemote
 import geekbrains.ru.translator.model.repository.Repository
 import geekbrains.ru.translator.model.repository.RepositoryImplementation
+import geekbrains.ru.translator.utils.parseSearchResults
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
@@ -37,11 +38,10 @@ class MainViewModel : ViewModel() {
         viewModelCoroutineScope.coroutineContext.cancelChildren()
         viewModelCoroutineScope.launch {
             val data = if (isOnline) {
-                remoteRepository.getData(word).map { AppState.Success(it) }
+                parseSearchResults(AppState.Success(remoteRepository.getData(word)))
             } else {
-                localRepository.getData(word).map { AppState.Success(it) }
-            }
-            liveData.postValue(AppState.Success(data))
+                parseSearchResults(AppState.Success(localRepository.getData(word))) }
+            liveData.postValue(data)
         }
     }
 

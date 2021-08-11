@@ -2,10 +2,6 @@ package geekbrains.ru.translator.model.datasource
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import geekbrains.ru.translator.model.data.DataModel
-import io.reactivex.Observable
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -22,7 +18,7 @@ class RetrofitImpl : DataSource<List<DataModel>> {
     }
 
     override suspend fun getData(word: String): List<DataModel> {
-        return api.search(word)
+        return api.searchAsync(word).await()
     }
 
     companion object {
