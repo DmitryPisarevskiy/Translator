@@ -8,49 +8,56 @@ import geekbrains.ru.translator.model.datasource.DataSourceLocal
 import geekbrains.ru.translator.model.datasource.DataSourceRemote
 import geekbrains.ru.translator.model.repository.Repository
 import geekbrains.ru.translator.model.repository.RepositoryImplementation
+import geekbrains.ru.translator.utils.parseSearchResults
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 
 class MainViewModel : ViewModel() {
     var liveData: MutableLiveData<AppState> = MutableLiveData()
+
+    protected val viewModelCoroutineScope = CoroutineScope(
+        Dispatchers.Main
+                + SupervisorJob()
+                + CoroutineExceptionHandler { _, err ->
+            liveData.postValue(AppState.Error(err))
+        })
+
     private val remoteRepository: Repository<List<DataModel>> = RepositoryImplementation(
         DataSourceRemote()
     )
     private val localRepository: Repository<List<DataModel>> = RepositoryImplementation(
         DataSourceLocal()
     )
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+//    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     fun getData(word: String, isOnline: Boolean) {
-        val data = if (isOnline) {
-            remoteRepository.getData(word).map { AppState.Success(it) }
-        } else {
-            localRepository.getData(word).map { AppState.Success(it) }
-        }
-        compositeDisposable.add(
-            data
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { liveData.value = AppState.Loading(null) }
-                .subscribeWith(getObserver())
-        )
-    }
-
-    private fun getObserver(): DisposableObserver<AppState> {
-        return object : DisposableObserver<AppState>() {
-
-            override fun onNext(appState: AppState) {
-                liveData.value = appState
-            }
-
-            override fun onError(e: Throwable) {
-                liveData.value = AppState.Error(e)
-            }
-
-            override fun onComplete() {
-            }
+        liveData.value = AppState.Loading(null)
+        viewModelCoroutineScope.coroutineContext.cancelChildren()
+        viewModelCoroutineScope.launch {
+            val data = if (isOnline) {
+                parseSearchResults(AppState.Success(remoteRepository.getData(word)))
+            } else {
+                parseSearchResults(AppState.Success(localRepository.getData(word))) }
+            liveData.postValue(data)
         }
     }
+
+//    private fun getObserver(): DisposableObserver<AppState> {
+//        return object : DisposableObserver<AppState>() {
+//
+//            override fun onNext(appState: AppState) {
+//                liveData.value = appState
+//            }
+//
+//            override fun onError(e: Throwable) {
+//                liveData.value = AppState.Error(e)
+//            }
+//
+//            override fun onComplete() {
+//            }
+//        }
+//    }
 }
